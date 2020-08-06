@@ -29,6 +29,8 @@ type Card struct {
 	Value int    `json:"value"`
 }
 
+// Deck type
+
 // JSONdeck returns typed deck
 func JSONdeck(d []string) (jsond []Card) {
 	var v int
@@ -83,3 +85,11 @@ var DeckString = strings.Join(deck, ", ")
 
 // TypedDeck typed deck
 var TypedDeck = JSONdeck(deck)
+
+// GetNRandomCards get n random cards from deck
+func GetNRandomCards(n int, d []string) {
+	fmt.Println(len(d))
+	for i := 0; i < n; i++ {
+
+	}
+}

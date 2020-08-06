@@ -20,6 +20,8 @@ func getDeckString(c *gin.Context) {
 	c.String(200, DeckString)
 }
 
+
+
 func getDeckJSON(c *gin.Context) {
 	c.JSON(200, TypedDeck)
 }
