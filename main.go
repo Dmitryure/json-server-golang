@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -31,35 +32,65 @@ func getDeckJSON(c *gin.Context) {
 	c.JSON(200, typedDeck)
 }
 
-// func getRandomNCards(c *gin.Context) {
-// 	ShuffleDeck(deck)
-// 	n, err := strconv.Atoi(c.Param("n"))
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	var hand []string
-// 	if len(deck) <= n*2 {
-// 		n = len(deck) - 1
-// 	} else {
-// 		fmt.Println(deck)
-// 		for i := 0; i < n; i++ {
-// 			fmt.Println(i)
-// 			fmt.Println(hand, "hand")
-// 			hand = append(hand, deck[i])
-// 			deck = append(deck[:1], deck[2:]...)
-// 		}
-// 	}
-// 	fmt.Println(len(deck))
+func getRandomNCards(c *gin.Context) {
+	ShuffleDeck(deck)
+	n, err := strconv.Atoi(c.Param("n"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	var hand []string
+	if len(deck) <= n*2 {
+		n = len(deck) - 1
+	} else {
+		fmt.Println(deck)
+		for i := 0; i < n; i++ {
+			fmt.Println(i)
+			fmt.Println(hand, "hand")
+			hand = append(hand, deck[i])
+			deck = append(deck[:1], deck[2:]...)
+		}
+	}
+	fmt.Println(len(deck))
 
-// 	var typedHand = DeckStructs(hand)
-// 	c.JSON(200, typedHand)
-// }
+	var typedHand = DeckStructs(hand)
+	c.JSON(200, typedHand)
+}
+
+func generateNCards(n int) chan string {
+	ch := make(chan string)
+
+	go func(ch chan string) {
+		for i := 0; i < n; i++ {
+			if len(deck) == 0 {
+				ch <- ""
+			} else {
+				ch <- deck[0]
+				deck = append(deck[:0], deck[1:]...)
+			}
+		}
+		close(ch)
+	}(ch)
+	return ch
+}
+
+func getNCards(c *gin.Context) {
+	n, err := strconv.Atoi(c.Param("n"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	var hand []string
+	for val := range generateNCards(n) {
+		hand = append(hand, val)
+	}
+	c.JSON(200, DeckStructs(hand))
+}
 
 func main() {
 	r := gin.Default()
 	r.POST("/photo", photoUpload)
 	r.GET("/deck", getDeckString)
 	r.GET("/jsondeck", getDeckJSON)
-	// r.GET("/hand/:n", getRandomNCards)
-	r.Run("0.0.0.0:3001") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.GET("/hand/:n", getRandomNCards)
+	r.GET("/gdeck/:n", getNCards)
+	r.Run("0.0.0.0:3001")
 }

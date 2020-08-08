@@ -46,6 +46,8 @@ func DeckStructs(d []string) (jsond []Card) {
 			s = "diamonds"
 		case strings.Contains(card, "Clubs"):
 			s = "clubs"
+		default:
+			s = ""
 		}
 		switch true {
 		case strings.Contains(card, "Ace"):
@@ -74,6 +76,8 @@ func DeckStructs(d []string) (jsond []Card) {
 			v = 12
 		case strings.Contains(card, "King"):
 			v = 13
+		default:
+			v = 0
 		}
 		jsond = append(jsond, Card{Info: card, Suit: s, Value: v})
 	}
