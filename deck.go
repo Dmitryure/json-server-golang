@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 var s = []string{"Spades", "Hearts", "Diamonds", "Clubs"}
@@ -20,8 +22,6 @@ func CreateDeck() (d []string) {
 	return
 }
 
-var deck = CreateDeck()
-
 // Card type
 type Card struct {
 	Info  string `json:"info"`
@@ -31,8 +31,8 @@ type Card struct {
 
 // Deck type
 
-// JSONdeck returns typed deck
-func JSONdeck(d []string) (jsond []Card) {
+// DeckStructs returns typed deck
+func DeckStructs(d []string) (jsond []Card) {
 	var v int
 	var s string
 	for _, card := range d {
@@ -80,16 +80,11 @@ func JSONdeck(d []string) (jsond []Card) {
 	return
 }
 
-// DeckString returns string representation of deck
-var DeckString = strings.Join(deck, ", ")
-
-// TypedDeck typed deck
-var TypedDeck = JSONdeck(deck)
-
-// GetNRandomCards get n random cards from deck
-func GetNRandomCards(n int, d []string) {
-	fmt.Println(len(d))
-	for i := 0; i < n; i++ {
-
+// ShuffleDeck shuffles deck
+func ShuffleDeck(d []string) {
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	for n := len(d); n > 0; n-- {
+		randIndex := r.Intn(n)
+		d[n-1], d[randIndex] = d[randIndex], d[n-1]
 	}
 }
