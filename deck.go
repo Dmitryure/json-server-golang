@@ -29,8 +29,6 @@ type Card struct {
 	Value int    `json:"value"`
 }
 
-// Deck type
-
 // DeckStructs returns typed deck
 func DeckStructs(d []string) (jsond []Card) {
 	var v int

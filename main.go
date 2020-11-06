@@ -2,23 +2,12 @@ package main
 
 import (
 	"fmt"
-	"path"
 	"strconv"
 	"strings"
-
 	"github.com/gin-gonic/gin"
 )
 
 var deck = CreateDeck()
-
-func photoUpload(c *gin.Context) {
-	file, err := c.FormFile("file")
-	if err != nil {
-		fmt.Println(err)
-	}
-	c.SaveUploadedFile(file, path.Join("./photos", file.Filename))
-	c.String(200, fmt.Sprintf("uploaded"))
-}
 
 func getDeckString(c *gin.Context) {
 	ShuffleDeck(deck)
@@ -44,8 +33,6 @@ func getRandomNCards(c *gin.Context) {
 	} else {
 		fmt.Println(deck)
 		for i := 0; i < n; i++ {
-			fmt.Println(i)
-			fmt.Println(hand, "hand")
 			hand = append(hand, deck[i])
 			deck = append(deck[:1], deck[2:]...)
 		}
@@ -85,12 +72,16 @@ func getNCards(c *gin.Context) {
 	c.JSON(200, DeckStructs(hand))
 }
 
+func resetDeck(c *gin.Context) {
+	deck = CreateDeck()
+}
+
 func main() {
 	r := gin.Default()
-	r.POST("/photo", photoUpload)
 	r.GET("/deck", getDeckString)
 	r.GET("/jsondeck", getDeckJSON)
 	r.GET("/hand/:n", getRandomNCards)
 	r.GET("/gdeck/:n", getNCards)
+	r.GET("/reset", resetDeck)
 	r.Run("0.0.0.0:3001")
 }
