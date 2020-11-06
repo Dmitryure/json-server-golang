@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"strconv"
 	"strings"
-	"github.com/gin-gonic/gin"
 )
 
 var deck = CreateDeck()
@@ -78,10 +78,11 @@ func resetDeck(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
+	fmt.Println("server is running on 8080")
 	r.GET("/deck", getDeckString)
 	r.GET("/jsondeck", getDeckJSON)
 	r.GET("/hand/:n", getRandomNCards)
 	r.GET("/gdeck/:n", getNCards)
 	r.GET("/reset", resetDeck)
-	r.Run("0.0.0.0:3001")
+	r.Run("0.0.0.0:8080")
 }
